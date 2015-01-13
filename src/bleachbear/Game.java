@@ -1,28 +1,34 @@
 package bleachbear;
 
 import java.applet.Applet;
-import java.awt.Color;
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.ArrayList;
+import java.net.URL;
 
 public class Game extends Applet implements Runnable, KeyListener{
 	private Player p;
-	private Image image;
-	private Graphics graphics;
+	private Image image, pSprite;
+	private Graphics bg;
+	private URL assets;
 	
 	public void init(){
-		
-		setSize(640, 360);
+		setSize(600, 360);
 		setFocusable(true);
+		addKeyListener(this);
 		
 		Frame frame = (Frame)this.getParent().getParent();
 		frame.setTitle("Bleach Bear");
 		
-		super.init();
+		try {
+			assets = getDocumentBase();
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		pSprite = getImage(assets, "player.png");
 	}
 	
 	public void start(){
@@ -41,6 +47,7 @@ public class Game extends Applet implements Runnable, KeyListener{
 	
 	public void run(){
 		while(true){
+			p.move();
 			repaint();
 			
 			try{
@@ -49,6 +56,22 @@ public class Game extends Applet implements Runnable, KeyListener{
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	public void update(Graphics g) {
+		if (image == null) {
+			image = createImage(this.getWidth(), this.getHeight());
+			bg = image.getGraphics();
+		}
+		
+		//bg.fillRect(0, 0, getWidth(), getHeight());
+		paint(bg);
+
+		g.drawImage(image, 0, 0, this);
+	}
+
+	public void paint(Graphics g) {
+		g.drawImage(pSprite, p.getX()-61, p.getY()-61, this);
 	}
 	
 	public void keyPressed(KeyEvent e){
@@ -66,20 +89,4 @@ public class Game extends Applet implements Runnable, KeyListener{
 	}
 	public void keyReleased(KeyEvent e){}
 	public void keyTyped(KeyEvent e){}
-	
-	/*public void update(Graphics g) {
-		if (image == null) {
-			image = createImage(this.getWidth(), this.getHeight());
-			graphics = image.getGraphics();
-		}
-		
-		paint(graphics);
-
-		g.drawImage(image, 0, 0, this);
-
-	}
-
-	public void paint(Graphics g) {
-		
-	}*/
 }
