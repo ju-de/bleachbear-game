@@ -7,8 +7,8 @@ public class Player{
 	private boolean jumping;
 	
 	Player(){
-		x = 100;
-		y = 100;
+		x = 64;
+		y = 192;
 		jumping = false;
 		
 		speed = 5;

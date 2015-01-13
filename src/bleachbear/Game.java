@@ -9,10 +9,11 @@ import java.awt.event.KeyListener;
 import java.net.URL;
 
 public class Game extends Applet implements Runnable, KeyListener{
-	private Player p;
-	private Image image, pSprite;
-	private Graphics bg;
-	private URL assets;
+	Player p;
+	Image image, pSprite;
+	int pWidth=64, pHeight=80, row=0, col=0;
+	Graphics panel;
+	URL assets;
 	
 	public void init(){
 		setSize(600, 360);
@@ -61,17 +62,17 @@ public class Game extends Applet implements Runnable, KeyListener{
 	public void update(Graphics g) {
 		if (image == null) {
 			image = createImage(this.getWidth(), this.getHeight());
-			bg = image.getGraphics();
+			panel = image.getGraphics();
 		}
 		
-		//bg.fillRect(0, 0, getWidth(), getHeight());
-		paint(bg);
+		//panel.fillRect(0, 0, getWidth(), getHeight());
+		paint(panel);
 
 		g.drawImage(image, 0, 0, this);
 	}
 
 	public void paint(Graphics g) {
-		g.drawImage(pSprite, p.getX()-61, p.getY()-61, this);
+		g.drawImage(pSprite, p.getX(), p.getY(), p.getX()+pWidth, p.getY()+pHeight, pWidth*col, pHeight*row, pWidth+pWidth*col, pHeight+pHeight*row, this);	//image, size, part of image, listener
 	}
 	
 	public void keyPressed(KeyEvent e){
