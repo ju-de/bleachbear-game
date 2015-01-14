@@ -65,7 +65,7 @@ public class Game extends Applet implements Runnable, KeyListener{
 			panel = image.getGraphics();
 		}
 		
-		//panel.fillRect(0, 0, getWidth(), getHeight());
+		panel.fillRect(0, 0, getWidth(), getHeight());
 		paint(panel);
 
 		g.drawImage(image, 0, 0, this);
@@ -74,20 +74,32 @@ public class Game extends Applet implements Runnable, KeyListener{
 	public void paint(Graphics g) {
 		g.drawImage(pSprite, p.getX(), p.getY(), p.getX()+pWidth, p.getY()+pHeight, pWidth*col, pHeight*row, pWidth+pWidth*col, pHeight+pHeight*row, this);	//image, size, part of image, listener
 	}
-	
+		
 	public void keyPressed(KeyEvent e){
 		switch(e.getKeyCode()){
-		case KeyEvent.VK_UP:
-			break;
-		case KeyEvent.VK_DOWN:
-			break; 
-		case KeyEvent.VK_LEFT:
-			break; 
-		case KeyEvent.VK_RIGHT:
-			break; 
-		}
-		
+			case KeyEvent.VK_UP:
+				p.jump();
+				break;
+			case KeyEvent.VK_LEFT:
+				p.setDx(-1*p.getSpeed());
+				break;
+			case KeyEvent.VK_RIGHT:
+				p.setDx(p.getSpeed());
+				break;
+		}	
 	}
-	public void keyReleased(KeyEvent e){}
+	
+	public void keyReleased(KeyEvent e){
+		switch(e.getKeyCode()){
+			case KeyEvent.VK_UP:
+				break;
+			case KeyEvent.VK_LEFT:
+				p.setDx(0);
+				break;
+			case KeyEvent.VK_RIGHT:
+				p.setDx(0);
+				break;
+		}
+	}
 	public void keyTyped(KeyEvent e){}
 }

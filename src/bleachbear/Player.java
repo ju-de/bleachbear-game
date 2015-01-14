@@ -4,42 +4,57 @@ import java.awt.Graphics;
 
 public class Player{
 	private int x, y, dx, dy, speed, jumpHeight;
-	private boolean jumping;
+	private boolean airborne;
 	
 	Player(){
 		x = 64;
 		y = 192;
-		jumping = false;
+		dx = 0;
+		dy = 0;
+		airborne = false;
 		
 		speed = 5;
 		jumpHeight = 10;
 	}
 	
 	public void move(){
+		//x
+		if(x+dx < 64) //out of bounding box
+			x = 64;
+		if(x+dx > 600-320)
+			x = 600-320;
+		else
+			x += dx;
 		
-		if(dx>200 || dx<200	)	//bounding box
-			x+=dx;
-		else if(dx!=0){}	//pan background
+		//y
+		if(y+dy >= 360-192)	//above ground
+			y = 360-192;
+		else
+			y += dy;
 		
-		if(y+dy<=100)	//above ground
-			y+=dy;
-		
-		if(jumping){
-			dy++;
+		if(airborne){
+			dy++;	//fall
 			
-			if(y+dy>=100){
-				y=100;
-				dy=0;
-				jumping=false;
+			if(y+dy >= 192-jumpHeight){
+				y = 192-jumpHeight;	//maxHeight reached
+				dy = 0;
+				airborne = false;
 			}
 		}
 		
 	}
+	
+	public void setDx(int direction){
+		dx=direction;
+	}
 
+	public void setJumpHeight(int height){
+		jumpHeight+=height;
+	}
 	public void jump(){
-		if(!(jumping)){	//not already jumping
-			dy = jumpHeight;
-			jumping = true;
+		if(!(airborne)){	//not already jumping
+			dy = -jumpHeight;
+			airborne = true;
 		}
 	}
 	
@@ -49,6 +64,10 @@ public class Player{
 	
 	public int getY(){
 		return y;
+	}
+	
+	public int getSpeed(){
+		return speed;
 	}
 	
 	
