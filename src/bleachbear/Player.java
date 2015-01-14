@@ -14,7 +14,7 @@ public class Player{
 		airborne = false;
 		
 		speed = 5;
-		jumpHeight = 10;
+		jumpHeight = 12;
 	}
 	
 	public void move(){
@@ -27,21 +27,18 @@ public class Player{
 			x += dx;
 		
 		//y
-		if(y+dy >= 360-192)	//above ground
-			y = 360-192;
-		else
-			y += dy;
+
+		y += dy;
 		
 		if(airborne){
 			dy++;	//fall
 			
-			if(y+dy >= 192-jumpHeight){
-				y = 192-jumpHeight;	//maxHeight reached
+			if(y+dy >= 192){
+				y = 192;	//ground reached
 				dy = 0;
 				airborne = false;
 			}
 		}
-		
 	}
 	
 	public void setDx(int direction){

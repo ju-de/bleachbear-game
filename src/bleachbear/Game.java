@@ -82,9 +82,11 @@ public class Game extends Applet implements Runnable, KeyListener{
 				break;
 			case KeyEvent.VK_LEFT:
 				p.setDx(-1*p.getSpeed());
+				row=4;
 				break;
 			case KeyEvent.VK_RIGHT:
 				p.setDx(p.getSpeed());
+				row=0;
 				break;
 		}	
 	}
