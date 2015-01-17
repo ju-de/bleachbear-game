@@ -33,7 +33,7 @@ public class Game extends Applet implements Runnable, KeyListener{
 		p = new Player();
 		m = new Enemy();
 		r = new Enemy();
-		i = new Loot(124, 232);
+		i = new Loot();
 		
 		try {
 			assets = getDocumentBase();
@@ -78,6 +78,7 @@ public class Game extends Applet implements Runnable, KeyListener{
 					break;
 				}
 				i.destroy();
+				lootThing = getImage(assets, i.getPath()+".png");
 			}
 			repaint();
 			
@@ -108,8 +109,8 @@ public class Game extends Applet implements Runnable, KeyListener{
 				mWidth*mCol, mHeight*mRow, mWidth+mWidth*mCol, mHeight+mHeight*mRow, this);
 		g.drawImage(eRange, r.getX()+80, r.getY(), r.getX()+rWidth+80, r.getY()+rHeight,
 				rWidth*rCol, rHeight*rRow, rWidth+rWidth*rCol, rHeight+rHeight*rRow, this);
-		if(i.getStatus())
-			g.drawImage(lootThing, i.getX(), i.getY(), iWidth, iHeight, this);
+		
+		g.drawImage(lootThing, i.getX(), i.getY(), iWidth, iHeight, this);
 	}
 		
 	public void keyPressed(KeyEvent e){
@@ -147,7 +148,7 @@ public class Game extends Applet implements Runnable, KeyListener{
 	
 	public boolean collision(){
 		pBound = new Rectangle(p.getX(), p.getY(), pWidth-36, pHeight-10);
-		iBound = new Rectangle(i.getX(), i.getY(), iWidth-10, iHeight-10);
+		iBound = new Rectangle(i.getX(), i.getY(), iWidth-12, iHeight-10);
 		
 		if(pBound.intersects(iBound))
 			return true;

@@ -2,16 +2,15 @@ package bleachbear;
 
 class Loot {
 	private int x, y, item, bob;
-	private boolean takeable, bobbed;
+	private boolean bobbed;
 	
-	Loot(int spawnX, int spawnY){
-		x = spawnX;
-		y = spawnY;
+	Loot(){
+		x = spawnX();
+		y = spawnY();
 		bob = 0;
-		takeable = true;
 		bobbed = false;
 		
-		item = (int)(Math.random()*4);	//generate random loot item
+		item = spawnItem();	//generate random loot item
 	}
 	
 	public void bobbing(){
@@ -54,13 +53,21 @@ class Loot {
 		return y;
 	}
 	
-	public boolean getStatus(){
-		return takeable;
+	public int spawnItem(){
+		return (int)(Math.random()*4);
+	}
+	
+	public int spawnX(){
+		return (int)(Math.random()*400/2+100);
+	}
+	
+	public int spawnY(){
+		return 232;
 	}
 	
 	public void destroy(){
-		takeable = false;
-		//regenerate loot item
-		//spawn another on map
+		item = spawnItem();
+		x = spawnX();
+		y = spawnY();
 	}
 }
