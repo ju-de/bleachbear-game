@@ -4,19 +4,21 @@ import java.applet.Applet;
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.net.URL;
 
 public class Game extends Applet implements Runnable, KeyListener{
-	static Player p;
-	static Enemy m, r;
-	static Loot i = new Loot(124, 232);
+	Player p;
+	Enemy m, r;
+	Loot i;
 	Image image, pSprite, eMelee, eRange, lootThing;
-	static int pWidth=64, pHeight=80, pRow=0, pCol=0,
-				mWidth=56, mHeight=64, mRow=0, mCol=0,
-				rWidth=56, rHeight=64, rRow=0, rCol=0,
-				iWidth=40, iHeight=40;
+	int pWidth=64, pHeight=80, pRow=0, pCol=0,
+		mWidth=56, mHeight=64, mRow=0, mCol=0,
+		rWidth=56, rHeight=64, rRow=0, rCol=0,
+		iWidth=40, iHeight=40;
+	Rectangle pBound, mBound, rBound, iBound;
 	Graphics panel;
 	URL assets;
 	
@@ -27,6 +29,11 @@ public class Game extends Applet implements Runnable, KeyListener{
 		
 		Frame frame = (Frame)this.getParent().getParent();
 		frame.setTitle("Bleach Bear");
+		
+		p = new Player();
+		m = new Enemy();
+		r = new Enemy();
+		i = new Loot(124, 232);
 		
 		try {
 			assets = getDocumentBase();
@@ -41,9 +48,6 @@ public class Game extends Applet implements Runnable, KeyListener{
 	}
 	
 	public void start(){
-		p = new Player();
-		m = new Enemy();
-		r = new Enemy();
 		Thread thread = new Thread(this);
 		thread.start();
 	}
@@ -59,6 +63,22 @@ public class Game extends Applet implements Runnable, KeyListener{
 	public void run(){
 		while(true){
 			p.move();
+			
+			System.out.println(collision());
+			//item handling
+			if(collision()){
+				switch(i.getItem()){
+				case 0:
+					break;
+				case 1:
+					break;
+				case 2:
+					break;
+				case 3:
+					break;
+				}
+				i.destroy();
+			}
 			repaint();
 			
 			try{
@@ -100,44 +120,10 @@ public class Game extends Applet implements Runnable, KeyListener{
 			case KeyEvent.VK_LEFT:
 				p.setDx(-1*p.getSpeed());
 				pRow=4;
-				
-				//item handling
-				System.out.print(p.getX()+pWidth/2);
-				System.out.println(" "+i.getX());
-				if(p.getX()+pWidth/2 > i.getX() && p.getX()+pWidth/2 < i.getX()+iWidth){
-					switch(i.getItem()){
-					case 0:
-						break;
-					case 1:
-						break;
-					case 2:
-						break;
-					case 3:
-						break;
-					}
-					i.destroy();
-				}
 				break;
 			case KeyEvent.VK_RIGHT:
 				p.setDx(p.getSpeed());
 				pRow=0;
-				
-				//item handling
-				System.out.print(p.getX()+pWidth/2);
-				System.out.println(" "+i.getX());
-				if(p.getX()+pWidth/2 > i.getX() && p.getX()+pWidth/2 < i.getX()+iWidth){
-					switch(i.getItem()){
-					case 0:
-						break;
-					case 1:
-						break;
-					case 2:
-						break;
-					case 3:
-						break;
-					}
-					i.destroy();
-				}
 				break;
 			case KeyEvent.VK_SPACE:
 				break;
@@ -154,10 +140,18 @@ public class Game extends Applet implements Runnable, KeyListener{
 			case KeyEvent.VK_RIGHT:
 				p.setDx(0);
 				break;
-			case KeyEvent.VK_SPACE:
-				break;
 		}
 	}
 	
 	public void keyTyped(KeyEvent e){}
+	
+	public boolean collision(){
+		pBound = new Rectangle(p.getX(), p.getY(), pWidth-36, pHeight-10);
+		iBound = new Rectangle(i.getX(), i.getY(), iWidth-10, iHeight-10);
+		
+		if(pBound.intersects(iBound))
+			return true;
+		
+		return false;
+	}
 }
