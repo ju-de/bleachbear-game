@@ -100,6 +100,8 @@ public class Game extends Applet implements Runnable, KeyListener{
 				p.setDx(p.getSpeed());
 				pRow=0;
 				break;
+			case KeyEvent.VK_SPACE:
+				break;
 		}	
 	}
 	
@@ -112,6 +114,8 @@ public class Game extends Applet implements Runnable, KeyListener{
 				break;
 			case KeyEvent.VK_RIGHT:
 				p.setDx(0);
+				break;
+			case KeyEvent.VK_SPACE:
 				break;
 		}
 	}

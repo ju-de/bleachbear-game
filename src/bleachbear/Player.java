@@ -3,7 +3,7 @@ package bleachbear;
 import java.awt.Graphics;
 
 public class Player{
-	private int x, y, dx, dy, speed, jumpHeight;
+	private int x, y, dx, dy, speed, jumpHeight, hp;
 	private boolean airborne;
 	
 	Player(){
@@ -11,6 +11,7 @@ public class Player{
 		y = 192;
 		dx = 0;
 		dy = 0;
+		hp = 3;
 		airborne = false;
 		
 		speed = 5;
