@@ -63,8 +63,8 @@ public class Game extends Applet implements Runnable, KeyListener{
 	public void run(){
 		while(true){
 			p.move();
+			i.bobbing();
 			
-			System.out.println(collision());
 			//item handling
 			if(collision()){
 				switch(i.getItem()){

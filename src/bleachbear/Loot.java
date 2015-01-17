@@ -1,17 +1,31 @@
 package bleachbear;
 
 class Loot {
-	private int x, y, item;
-	private boolean takeable;
+	private int x, y, item, bob;
+	private boolean takeable, bobbed;
 	
 	Loot(int spawnX, int spawnY){
 		x = spawnX;
 		y = spawnY;
+		bob = 0;
 		takeable = true;
+		bobbed = false;
 		
-		item=(int)(Math.random()*4);	//generate random loot item
+		item = (int)(Math.random()*4);	//generate random loot item
+	}
+	
+	public void bobbing(){
+		if(bobbed)
+			bob++;
+		else
+			bob--;
 		
-		//bob
+		y+=bob/4;
+		
+		if(bob==-8)
+			bobbed=true;
+		else if(bob==8)
+			bobbed=false;
 	}
 	
 	public int getItem(){
