@@ -11,10 +11,12 @@ import java.net.URL;
 public class Game extends Applet implements Runnable, KeyListener{
 	Player p;
 	Enemy m, r;
-	Image image, pSprite, eMelee, eRange;
+	Loot i = new Loot(124, 232);
+	Image image, pSprite, eMelee, eRange, lootThing;
 	int pWidth=64, pHeight=80, pRow=0, pCol=0,
 		mWidth=56, mHeight=64, mRow=0, mCol=0,
-		rWidth=56, rHeight=64, rRow=0, rCol=0;
+		rWidth=56, rHeight=64, rRow=0, rCol=0,
+		iWidth=40, iHeight=40;
 	Graphics panel;
 	URL assets;
 	
@@ -35,6 +37,8 @@ public class Game extends Applet implements Runnable, KeyListener{
 		pSprite = getImage(assets, "player.png");
 		eMelee = getImage(assets, "melee.png");
 		eRange = getImage(assets, "ranged.png");
+		lootThing = getImage(assets, "bee.png");
+		lootThing = getImage(assets, i.getPath()+".png");
 	}
 	
 	public void start(){
@@ -85,6 +89,8 @@ public class Game extends Applet implements Runnable, KeyListener{
 				mWidth*mCol, mHeight*mRow, mWidth+mWidth*mCol, mHeight+mHeight*mRow, this);
 		g.drawImage(eRange, r.getX()+80, r.getY(), r.getX()+rWidth+80, r.getY()+rHeight,
 				rWidth*rCol, rHeight*rRow, rWidth+rWidth*rCol, rHeight+rHeight*rRow, this);
+		
+		g.drawImage(lootThing, i.getX(), i.getY(), iWidth, iHeight, this);
 	}
 		
 	public void keyPressed(KeyEvent e){
@@ -119,5 +125,6 @@ public class Game extends Applet implements Runnable, KeyListener{
 				break;
 		}
 	}
+	
 	public void keyTyped(KeyEvent e){}
 }
