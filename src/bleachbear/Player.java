@@ -27,7 +27,6 @@ public class Player{
 			x += dx;
 		
 		//y
-
 		y += dy;
 		
 		if(airborne){
@@ -66,6 +65,5 @@ public class Player{
 	public int getSpeed(){
 		return speed;
 	}
-	
 	
 }

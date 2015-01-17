@@ -10,12 +10,15 @@ import java.net.URL;
 
 public class Game extends Applet implements Runnable, KeyListener{
 	Player p;
-	Image image, pSprite;
-	int pWidth=64, pHeight=80, row=0, col=0;
+	Enemy m, r;
+	Image image, pSprite, eMelee, eRange;
+	int pWidth=64, pHeight=80, pRow=0, pCol=0,
+		mWidth=56, mHeight=64, mRow=0, mCol=0,
+		rWidth=56, rHeight=64, rRow=0, rCol=0;
 	Graphics panel;
 	URL assets;
 	
-	public void init(){
+	public void init(){	
 		setSize(600, 360);
 		setFocusable(true);
 		addKeyListener(this);
@@ -30,10 +33,14 @@ public class Game extends Applet implements Runnable, KeyListener{
 		}
 		
 		pSprite = getImage(assets, "player.png");
+		eMelee = getImage(assets, "melee.png");
+		eRange = getImage(assets, "ranged.png");
 	}
 	
 	public void start(){
 		p = new Player();
+		m = new Enemy();
+		r = new Enemy();
 		Thread thread = new Thread(this);
 		thread.start();
 	}
@@ -64,7 +71,6 @@ public class Game extends Applet implements Runnable, KeyListener{
 			image = createImage(this.getWidth(), this.getHeight());
 			panel = image.getGraphics();
 		}
-		
 		panel.fillRect(0, 0, getWidth(), getHeight());
 		paint(panel);
 
@@ -72,7 +78,13 @@ public class Game extends Applet implements Runnable, KeyListener{
 	}
 
 	public void paint(Graphics g) {
-		g.drawImage(pSprite, p.getX(), p.getY(), p.getX()+pWidth, p.getY()+pHeight, pWidth*col, pHeight*row, pWidth+pWidth*col, pHeight+pHeight*row, this);	//image, size, part of image, listener
+		g.drawImage(pSprite, p.getX(), p.getY(), p.getX()+pWidth, p.getY()+pHeight,
+				pWidth*pCol, pHeight*pRow, pWidth+pWidth*pCol, pHeight+pHeight*pRow, this);
+				//image, size, part of image, listener
+		g.drawImage(eMelee, m.getX(), m.getY(), m.getX()+mWidth, m.getY()+mHeight,
+				mWidth*mCol, mHeight*mRow, mWidth+mWidth*mCol, mHeight+mHeight*mRow, this);
+		g.drawImage(eRange, r.getX()+80, r.getY(), r.getX()+rWidth+80, r.getY()+rHeight,
+				rWidth*rCol, rHeight*rRow, rWidth+rWidth*rCol, rHeight+rHeight*rRow, this);
 	}
 		
 	public void keyPressed(KeyEvent e){
@@ -82,11 +94,11 @@ public class Game extends Applet implements Runnable, KeyListener{
 				break;
 			case KeyEvent.VK_LEFT:
 				p.setDx(-1*p.getSpeed());
-				row=4;
+				pRow=4;
 				break;
 			case KeyEvent.VK_RIGHT:
 				p.setDx(p.getSpeed());
-				row=0;
+				pRow=0;
 				break;
 		}	
 	}
