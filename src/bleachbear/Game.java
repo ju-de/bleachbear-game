@@ -9,14 +9,14 @@ import java.awt.event.KeyListener;
 import java.net.URL;
 
 public class Game extends Applet implements Runnable, KeyListener{
-	Player p;
-	Enemy m, r;
-	Loot i = new Loot(124, 232);
+	static Player p;
+	static Enemy m, r;
+	static Loot i = new Loot(124, 232);
 	Image image, pSprite, eMelee, eRange, lootThing;
-	int pWidth=64, pHeight=80, pRow=0, pCol=0,
-		mWidth=56, mHeight=64, mRow=0, mCol=0,
-		rWidth=56, rHeight=64, rRow=0, rCol=0,
-		iWidth=40, iHeight=40;
+	static int pWidth=64, pHeight=80, pRow=0, pCol=0,
+				mWidth=56, mHeight=64, mRow=0, mCol=0,
+				rWidth=56, rHeight=64, rRow=0, rCol=0,
+				iWidth=40, iHeight=40;
 	Graphics panel;
 	URL assets;
 	
@@ -37,7 +37,6 @@ public class Game extends Applet implements Runnable, KeyListener{
 		pSprite = getImage(assets, "player.png");
 		eMelee = getImage(assets, "melee.png");
 		eRange = getImage(assets, "ranged.png");
-		lootThing = getImage(assets, "bee.png");
 		lootThing = getImage(assets, i.getPath()+".png");
 	}
 	
@@ -89,8 +88,8 @@ public class Game extends Applet implements Runnable, KeyListener{
 				mWidth*mCol, mHeight*mRow, mWidth+mWidth*mCol, mHeight+mHeight*mRow, this);
 		g.drawImage(eRange, r.getX()+80, r.getY(), r.getX()+rWidth+80, r.getY()+rHeight,
 				rWidth*rCol, rHeight*rRow, rWidth+rWidth*rCol, rHeight+rHeight*rRow, this);
-		
-		g.drawImage(lootThing, i.getX(), i.getY(), iWidth, iHeight, this);
+		if(i.getStatus())
+			g.drawImage(lootThing, i.getX(), i.getY(), iWidth, iHeight, this);
 	}
 		
 	public void keyPressed(KeyEvent e){
@@ -101,10 +100,44 @@ public class Game extends Applet implements Runnable, KeyListener{
 			case KeyEvent.VK_LEFT:
 				p.setDx(-1*p.getSpeed());
 				pRow=4;
+				
+				//item handling
+				System.out.print(p.getX()+pWidth/2);
+				System.out.println(" "+i.getX());
+				if(p.getX()+pWidth/2 > i.getX() && p.getX()+pWidth/2 < i.getX()+iWidth){
+					switch(i.getItem()){
+					case 0:
+						break;
+					case 1:
+						break;
+					case 2:
+						break;
+					case 3:
+						break;
+					}
+					i.destroy();
+				}
 				break;
 			case KeyEvent.VK_RIGHT:
 				p.setDx(p.getSpeed());
 				pRow=0;
+				
+				//item handling
+				System.out.print(p.getX()+pWidth/2);
+				System.out.println(" "+i.getX());
+				if(p.getX()+pWidth/2 > i.getX() && p.getX()+pWidth/2 < i.getX()+iWidth){
+					switch(i.getItem()){
+					case 0:
+						break;
+					case 1:
+						break;
+					case 2:
+						break;
+					case 3:
+						break;
+					}
+					i.destroy();
+				}
 				break;
 			case KeyEvent.VK_SPACE:
 				break;

@@ -2,10 +2,12 @@ package bleachbear;
 
 class Loot {
 	private int x, y, item;
+	private boolean takeable;
 	
 	Loot(int spawnX, int spawnY){
-		x=spawnX;
-		y=spawnY;
+		x = spawnX;
+		y = spawnY;
+		takeable = true;
 		
 		item=(int)(Math.random()*4);	//generate random loot item
 		
@@ -36,5 +38,15 @@ class Loot {
 	
 	public int getY(){
 		return y;
+	}
+	
+	public boolean getStatus(){
+		return takeable;
+	}
+	
+	public void destroy(){
+		takeable = false;
+		//regenerate loot item
+		//spawn another on map
 	}
 }
