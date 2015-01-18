@@ -1,7 +1,8 @@
 package bleachbear;
 
 public class Bullet {
-	private int dmg, knockback, x, y, direction;
+	private static int dmg, knockback;
+	private int x, y, direction;
 	private boolean shooting;
 	
 	Bullet(){

@@ -70,6 +70,8 @@ public class Game extends Applet implements Runnable, KeyListener{
 	public void run(){
 		while(true){
 			p.move();
+			m.move();
+			r.move();
 			i.bobbing();
 			
 			//projectile
@@ -80,13 +82,17 @@ public class Game extends Applet implements Runnable, KeyListener{
 			//item handling
 			if(iCollision()){
 				switch(i.getItem()){
-				case 0:
+				case 0:	//bee
+					pew.get(0).boost(1);
 					break;
-				case 1:
+				case 1:	//bleach
+					p.fillHP();
 					break;
-				case 2:
+				case 2:	//bomb
+					ammo=0;
 					break;
-				case 3:
+				case 3:	//boots
+					p.addSpeed(1);
 					break;
 				}
 				i.destroy();
@@ -96,10 +102,13 @@ public class Game extends Applet implements Runnable, KeyListener{
 			//animation handling
 			tick++;
 			if(tick%5 == 0){	//every 5 ticks
-				switch(pRow){
+				switch(pRow){	//player
 				//idle
 				case 0:
 				case 4:
+				//jump
+				case 2:
+				case 6:
 				//shoot
 				case 3:
 				case 7:
@@ -116,15 +125,17 @@ public class Game extends Applet implements Runnable, KeyListener{
 					if(pCol == 6)
 						pCol = 0;
 					break;
-				//jump
-				case 2:
-				case 6:
-					pCol++;
-					repaint();
-					if(pCol == 3)
-						pCol = 0;
-					break;
 				}
+			}
+			
+			if(tick%10 == 0){
+				mCol++;
+				if(mCol == 4)
+					mCol = 0;
+				
+				rCol++;
+				if(rCol == 4)
+					rCol = 0;
 			}
 			repaint();
 			
@@ -192,13 +203,10 @@ public class Game extends Applet implements Runnable, KeyListener{
 					pCol = 0;
 				}
 				
-				if(ammo == 7)
-					ammo = 0;
-				
-				if(!(pew.get(ammo).shot())){
-					pew.get(ammo).trigger(p.getX()+2, p.getY(), direction);
+				pew.get(ammo).trigger(p.getX()+2, p.getY(), direction);
+				if(ammo<10)
 					ammo++;
-				}
+				
 				System.out.println(ammo);
 				break;
 		}	

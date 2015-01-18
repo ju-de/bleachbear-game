@@ -1,7 +1,5 @@
 package bleachbear;
 
-import java.awt.Graphics;
-
 public class Player{
 	private int x, y, dx, dy, speed, jumpHeight, hp;
 	private boolean airborne;
@@ -15,7 +13,7 @@ public class Player{
 		airborne = false;
 		
 		speed = 3;
-		jumpHeight = 12;
+		jumpHeight = 10;
 	}
 	
 	public void move(){
@@ -42,15 +40,19 @@ public class Player{
 	}
 	
 	public void setDx(int direction){
-		dx=direction;
+		dx = direction;
 	}
 
-	public void setJumpHeight(int height){
+	public void addJumpHeight(int height){
 		jumpHeight += height;
 	}
 	
-	public void setSpeed(int boost){
+	public void addSpeed(int boost){
 		speed += boost;
+	}
+	
+	public void fillHP(){
+		hp++;
 	}
 	
 	public void jump(){
