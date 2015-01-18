@@ -8,17 +8,21 @@ import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.net.URL;
+import java.util.ArrayList;
 
 public class Game extends Applet implements Runnable, KeyListener{
 	Player p;
 	Enemy m, r;
 	Loot i;
-	Image image, pSprite, eMelee, eRange, lootThing;
+	ArrayList<Bullet> pew = new ArrayList<Bullet>();
+	int ammo=0;
+	Image image, pSprite, eMelee, eRange, lootThing, projectile;
 	int pWidth=64, pHeight=80, pRow=0, pCol=0,
 		mWidth=56, mHeight=64, mRow=0, mCol=0,
 		rWidth=56, rHeight=64, rRow=0, rCol=0,
-		iWidth=40, iHeight=40;
-	Rectangle pBound, mBound, rBound, iBound;
+		iWidth=40, iHeight=40,
+		bWidth=5, bHeight=5;
+	Rectangle pBound, mBound, rBound, iBound, bBound;
 	Graphics panel;
 	URL assets;
 	
@@ -34,6 +38,8 @@ public class Game extends Applet implements Runnable, KeyListener{
 		m = new Enemy();
 		r = new Enemy();
 		i = new Loot();
+		for(int i=0; i<8; i++)
+			pew.add(new Bullet());
 		
 		try {
 			assets = getDocumentBase();
@@ -41,6 +47,7 @@ public class Game extends Applet implements Runnable, KeyListener{
 			e.printStackTrace();
 		}
 		
+		projectile = getImage(assets, "bullet.png");
 		pSprite = getImage(assets, "player.png");
 		eMelee = getImage(assets, "melee.png");
 		eRange = getImage(assets, "ranged.png");
@@ -65,8 +72,13 @@ public class Game extends Applet implements Runnable, KeyListener{
 			p.move();
 			i.bobbing();
 			
+			//projectile
+			for(int i=0; i<8; i++)
+				if(pew.get(i).shot())
+					pew.get(i).shoot();
+			
 			//item handling
-			if(collision()){
+			if(iCollision()){
 				switch(i.getItem()){
 				case 0:
 					break;
@@ -111,6 +123,9 @@ public class Game extends Applet implements Runnable, KeyListener{
 				rWidth*rCol, rHeight*rRow, rWidth+rWidth*rCol, rHeight+rHeight*rRow, this);
 		
 		g.drawImage(lootThing, i.getX(), i.getY(), iWidth, iHeight, this);
+		
+		for(int i=0; i<8; i++)
+			g.drawImage(projectile, pew.get(i).getX(), pew.get(i).getY(), bWidth, bHeight, this); 
 	}
 		
 	public void keyPressed(KeyEvent e){
@@ -127,6 +142,15 @@ public class Game extends Applet implements Runnable, KeyListener{
 				pRow=0;
 				break;
 			case KeyEvent.VK_SPACE:
+				if(ammo == 7)
+					ammo = 0;
+				
+				if(!(pew.get(ammo).shot())){
+					pew.get(ammo).trigger(p.getX()+2, p.getY(), pRow);
+					ammo++;
+				}
+				
+				System.out.println(ammo);
 				break;
 		}	
 	}
@@ -146,8 +170,8 @@ public class Game extends Applet implements Runnable, KeyListener{
 	
 	public void keyTyped(KeyEvent e){}
 	
-	public boolean collision(){
-		pBound = new Rectangle(p.getX(), p.getY(), pWidth-36, pHeight-10);
+	public boolean iCollision(){	//touch object
+		pBound = new Rectangle(p.getX(), p.getY(), pWidth-40, pHeight-10);
 		iBound = new Rectangle(i.getX(), i.getY(), iWidth-12, iHeight-10);
 		
 		if(pBound.intersects(iBound))
@@ -155,4 +179,14 @@ public class Game extends Applet implements Runnable, KeyListener{
 		
 		return false;
 	}
+	
+	/*public boolean bCollision(int i){	//touch bullet
+		bBound = new Rectangle(pew.get(i).getX(), pew.get(i).getY(), bWidth-2, bHeight-2);
+		eBound
+		
+		if(bBound.intersects(eBound))
+			return true;
+		
+		return false;
+	}*/
 }

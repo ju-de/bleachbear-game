@@ -1,12 +1,26 @@
 package bleachbear;
 
 public class Bullet {
-	private int ammo, dmg, knockback; 
+	private int dmg, knockback, x, y, direction;
+	private boolean shooting;
 	
 	Bullet(){
-		ammo = 8;
 		dmg = 1;
-		knockback = 0;
+		knockback = 1;
+		x = -100;
+		y = 240;
+		direction = 0;
+		shooting = false;
+	}
+	
+	public void shoot(){
+		if(x>600)
+			this.destroy();
+		
+		if(direction==0)
+			x += 10;
+		else
+			x -= 10;
 	}
 	
 	public void boost(int steroid){
@@ -19,11 +33,28 @@ public class Bullet {
 		return true;
 	}
 	
-	public void shoot(){
-		ammo--;
+	public void trigger(int pX, int pY, int facing){
+		x = pX;
+		y = pY+50;
+		shooting = true;
+		direction = facing;
 	}
 	
-	public void reload(){
-		ammo = 8;
+	public int getX(){
+		return x;
 	}
+	
+	public int getY(){
+		return y;
+	}
+	
+	public boolean shot(){
+		return shooting;
+	}
+	
+	public void destroy(){
+		x = -100;
+		shooting = false;
+	}
+		
 }
