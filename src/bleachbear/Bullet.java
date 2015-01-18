@@ -17,9 +17,9 @@ public class Bullet {
 		if(x>600)
 			this.destroy();
 		
-		if(direction==0)
+		if(direction == 0)	//right
 			x += 10;
-		else
+		else			//left
 			x -= 10;
 	}
 	

@@ -15,7 +15,7 @@ public class Game extends Applet implements Runnable, KeyListener{
 	Enemy m, r;
 	Loot i;
 	ArrayList<Bullet> pew = new ArrayList<Bullet>();
-	int ammo=0;
+	int ammo=0, tick=0, direction=0;
 	Image image, pSprite, eMelee, eRange, lootThing, projectile;
 	int pWidth=64, pHeight=80, pRow=0, pCol=0,
 		mWidth=56, mHeight=64, mRow=0, mCol=0,
@@ -92,6 +92,40 @@ public class Game extends Applet implements Runnable, KeyListener{
 				i.destroy();
 				lootThing = getImage(assets, i.getPath()+".png");
 			}
+			
+			//animation handling
+			tick++;
+			if(tick%5 == 0){	//every 5 ticks
+				switch(pRow){
+				//idle
+				case 0:
+				case 4:
+				//shoot
+				case 3:
+				case 7:
+					pCol++;
+					repaint();
+					if(pCol == 2)
+						pCol = 0;
+					break;
+				//walk
+				case 1:
+				case 5:
+					pCol++;
+					repaint();
+					if(pCol == 6)
+						pCol = 0;
+					break;
+				//jump
+				case 2:
+				case 6:
+					pCol++;
+					repaint();
+					if(pCol == 3)
+						pCol = 0;
+					break;
+				}
+			}
 			repaint();
 			
 			try{
@@ -102,8 +136,8 @@ public class Game extends Applet implements Runnable, KeyListener{
 		}
 	}
 	
-	public void update(Graphics g) {
-		if (image == null) {
+	public void update(Graphics g){
+		if(image == null) {
 			image = createImage(this.getWidth(), this.getHeight());
 			panel = image.getGraphics();
 		}
@@ -113,7 +147,7 @@ public class Game extends Applet implements Runnable, KeyListener{
 		g.drawImage(image, 0, 0, this);
 	}
 
-	public void paint(Graphics g) {
+	public void paint(Graphics g){
 		g.drawImage(pSprite, p.getX(), p.getY(), p.getX()+pWidth, p.getY()+pHeight,
 				pWidth*pCol, pHeight*pRow, pWidth+pWidth*pCol, pHeight+pHeight*pRow, this);
 				//image, size, part of image, listener
@@ -131,25 +165,40 @@ public class Game extends Applet implements Runnable, KeyListener{
 	public void keyPressed(KeyEvent e){
 		switch(e.getKeyCode()){
 			case KeyEvent.VK_UP:
+				if(direction == 0)
+					pRow = 2;
+				else
+					pRow = 6;
 				p.jump();
+				pCol = 0;
 				break;
 			case KeyEvent.VK_LEFT:
 				p.setDx(-1*p.getSpeed());
-				pRow=4;
+				pRow = 5;
+				direction = 1;
 				break;
 			case KeyEvent.VK_RIGHT:
 				p.setDx(p.getSpeed());
-				pRow=0;
+				pRow = 1;
+				direction = 0;
 				break;
 			case KeyEvent.VK_SPACE:
+				if(direction == 0){
+					pRow = 3;
+					pCol = 1;
+				}
+				else{
+					pRow = 7;
+					pCol = 0;
+				}
+				
 				if(ammo == 7)
 					ammo = 0;
 				
 				if(!(pew.get(ammo).shot())){
-					pew.get(ammo).trigger(p.getX()+2, p.getY(), pRow);
+					pew.get(ammo).trigger(p.getX()+2, p.getY(), direction);
 					ammo++;
 				}
-				
 				System.out.println(ammo);
 				break;
 		}	
@@ -158,12 +207,32 @@ public class Game extends Applet implements Runnable, KeyListener{
 	public void keyReleased(KeyEvent e){
 		switch(e.getKeyCode()){
 			case KeyEvent.VK_UP:
+				if(direction == 0)
+					pRow = 0;
+				else
+					pRow = 4;
+				pCol = 0;
 				break;
 			case KeyEvent.VK_LEFT:
 				p.setDx(0);
+				pRow = 4;
+				pCol = 0;
 				break;
 			case KeyEvent.VK_RIGHT:
 				p.setDx(0);
+				pRow = 0;
+				pCol = 0;
+				break;
+			case KeyEvent.VK_SPACE:
+				p.setDx(0);
+				if(direction == 0){
+					pRow = 0;
+					pCol = 0;
+				}
+				else{
+					pRow = 4;
+					pCol = 1;
+				}
 				break;
 		}
 	}

@@ -14,7 +14,7 @@ public class Player{
 		hp = 3;
 		airborne = false;
 		
-		speed = 5;
+		speed = 3;
 		jumpHeight = 12;
 	}
 	
@@ -46,8 +46,13 @@ public class Player{
 	}
 
 	public void setJumpHeight(int height){
-		jumpHeight+=height;
+		jumpHeight += height;
 	}
+	
+	public void setSpeed(int boost){
+		speed += boost;
+	}
+	
 	public void jump(){
 		if(!(airborne)){	//not already jumping
 			dy = -jumpHeight;
@@ -61,6 +66,10 @@ public class Player{
 	
 	public int getY(){
 		return y;
+	}
+	
+	public boolean inAir(){
+		return airborne;
 	}
 	
 	public int getSpeed(){
