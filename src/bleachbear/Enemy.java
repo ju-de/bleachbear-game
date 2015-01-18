@@ -6,21 +6,23 @@ public class Enemy{
 	Enemy(){
 		x = 320;
 		y = 207;
-		dx = speed;
 		hp = 5;
 		dmg = 1;
 		speed = 2;
+		dx = 0;
+	}
+
+	public void move(){
+		//x += speed;
 	}
 	
-	public void move(){
+	public void scroll(int dx){
 		x += dx;
-		
-		if(x<20 || x>580)
-			dx *= -1;	//change direction
 	}
+		
 	
 	public void turn(){
-		dx = (int)(Math.random()*2-1)*speed;
+		dx = (int)(Math.random()*3-1)*speed;
 	}
 	
 	public int getX(){

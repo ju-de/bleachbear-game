@@ -2,7 +2,7 @@ package bleachbear;
 
 public class Player{
 	private int x, y, dx, dy, speed, jumpHeight, hp;
-	private boolean airborne;
+	private boolean airborne, within;
 	
 	Player(){
 		x = 64;
@@ -11,6 +11,7 @@ public class Player{
 		dy = 0;
 		hp = 3;
 		airborne = false;
+		within = true;
 		
 		speed = 3;
 		jumpHeight = 10;
@@ -18,12 +19,18 @@ public class Player{
 	
 	public void move(){
 		//x
-		if(x+dx < 64) //out of bounding box
+		if(x+dx < 64){ //out of bounding box
 			x = 64;
-		if(x+dx > 600-320)
+			within = false;
+		}
+		else if(x+dx > 600-320){
 			x = 600-320;
-		else
+			within = false;
+		}
+		else{
 			x += dx;
+			within = true;
+		}
 		
 		//y
 		y += dy;
@@ -43,16 +50,14 @@ public class Player{
 		dx = direction;
 	}
 
-	public void addJumpHeight(int height){
-		jumpHeight += height;
-	}
-	
-	public void addSpeed(int boost){
-		speed += boost;
+	public void speedBoost(){
+		if(speed<7)
+			speed ++;
 	}
 	
 	public void fillHP(){
-		hp++;
+		if(hp<5)
+			hp++;
 	}
 	
 	public void jump(){
@@ -76,5 +81,9 @@ public class Player{
 	
 	public int getSpeed(){
 		return speed;
+	}
+	
+	public boolean inBox(){
+		return within;
 	}
 }

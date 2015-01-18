@@ -14,9 +14,10 @@ public class Game extends Applet implements Runnable, KeyListener{
 	Player p;
 	Enemy m, r;
 	Loot i;
+	Background bg;
 	ArrayList<Bullet> pew = new ArrayList<Bullet>();
 	int ammo=0, tick=0, direction=0;
-	Image image, pSprite, eMelee, eRange, lootThing, projectile;
+	Image image, pSprite, eMelee, eRange, lootThing, projectile, bDrop;
 	int pWidth=64, pHeight=80, pRow=0, pCol=0,
 		mWidth=56, mHeight=64, mRow=0, mCol=0,
 		rWidth=56, rHeight=64, rRow=0, rCol=0,
@@ -34,11 +35,12 @@ public class Game extends Applet implements Runnable, KeyListener{
 		Frame frame = (Frame)this.getParent().getParent();
 		frame.setTitle("Bleach Bear");
 		
+		bg = new Background();
 		p = new Player();
 		m = new Enemy();
 		r = new Enemy();
 		i = new Loot();
-		for(int i=0; i<8; i++)
+		for(int i=0; i<10; i++)
 			pew.add(new Bullet());
 		
 		try {
@@ -52,6 +54,7 @@ public class Game extends Applet implements Runnable, KeyListener{
 		eMelee = getImage(assets, "melee.png");
 		eRange = getImage(assets, "ranged.png");
 		lootThing = getImage(assets, i.getPath()+".png");
+		bDrop = getImage(assets, "bg.png");
 	}
 	
 	public void start(){
@@ -75,7 +78,7 @@ public class Game extends Applet implements Runnable, KeyListener{
 			i.bobbing();
 			
 			//projectile
-			for(int i=0; i<8; i++)
+			for(int i=0; i<10; i++)
 				if(pew.get(i).shot())
 					pew.get(i).shoot();
 			
@@ -92,7 +95,7 @@ public class Game extends Applet implements Runnable, KeyListener{
 					ammo=0;
 					break;
 				case 3:	//boots
-					p.addSpeed(1);
+					p.speedBoost();
 					break;
 				}
 				i.destroy();
@@ -159,6 +162,10 @@ public class Game extends Applet implements Runnable, KeyListener{
 	}
 
 	public void paint(Graphics g){
+		g.drawImage(bDrop, bg.getX(), 0, 1600+bg.getX(), 270, this);
+		if(ammo<10)
+			for(int i=0; i<10; i++)
+				g.drawImage(projectile, pew.get(i).getX(), pew.get(i).getY(), bWidth, bHeight, this);
 		g.drawImage(pSprite, p.getX(), p.getY(), p.getX()+pWidth, p.getY()+pHeight,
 				pWidth*pCol, pHeight*pRow, pWidth+pWidth*pCol, pHeight+pHeight*pRow, this);
 				//image, size, part of image, listener
@@ -166,11 +173,7 @@ public class Game extends Applet implements Runnable, KeyListener{
 				mWidth*mCol, mHeight*mRow, mWidth+mWidth*mCol, mHeight+mHeight*mRow, this);
 		g.drawImage(eRange, r.getX()+80, r.getY(), r.getX()+rWidth+80, r.getY()+rHeight,
 				rWidth*rCol, rHeight*rRow, rWidth+rWidth*rCol, rHeight+rHeight*rRow, this);
-		
 		g.drawImage(lootThing, i.getX(), i.getY(), iWidth, iHeight, this);
-		
-		for(int i=0; i<8; i++)
-			g.drawImage(projectile, pew.get(i).getX(), pew.get(i).getY(), bWidth, bHeight, this); 
 	}
 		
 	public void keyPressed(KeyEvent e){
@@ -183,16 +186,31 @@ public class Game extends Applet implements Runnable, KeyListener{
 				p.jump();
 				pCol = 0;
 				break;
+				
 			case KeyEvent.VK_LEFT:
 				p.setDx(-1*p.getSpeed());
 				pRow = 5;
 				direction = 1;
+				if(!(p.inBox())){
+					bg.scroll(p.getSpeed());
+					m.scroll(p.getSpeed());
+					r.scroll(p.getSpeed());
+					i.scroll(p.getSpeed());
+				}
 				break;
+				
 			case KeyEvent.VK_RIGHT:
 				p.setDx(p.getSpeed());
 				pRow = 1;
 				direction = 0;
+				if(!(p.inBox())){
+					bg.scroll(-1*p.getSpeed());
+					m.scroll(-1*p.getSpeed());
+					r.scroll(-1*p.getSpeed());
+					i.scroll(-1*p.getSpeed());
+				}
 				break;
+				
 			case KeyEvent.VK_SPACE:
 				if(direction == 0){
 					pRow = 3;
@@ -203,9 +221,10 @@ public class Game extends Applet implements Runnable, KeyListener{
 					pCol = 0;
 				}
 				
-				pew.get(ammo).trigger(p.getX()+2, p.getY(), direction);
-				if(ammo<10)
+				if(ammo<10){
+					pew.get(ammo).trigger(p.getX()+2, p.getY(), direction);
 					ammo++;
+				}	
 				
 				System.out.println(ammo);
 				break;

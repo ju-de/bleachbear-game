@@ -31,6 +31,10 @@ class Loot {
 		return item;
 	}
 	
+	public void scroll(int dx){
+		x += dx;
+	}
+	
 	public String getPath(){
 		switch(item){
 		case 0:
