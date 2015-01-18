@@ -1,6 +1,6 @@
 package bleachbear;
 
-class Loot {
+class Loot{
 	private int x, y, item, bob;
 	private boolean bobbed;
 	

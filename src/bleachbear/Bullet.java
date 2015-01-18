@@ -1,6 +1,6 @@
 package bleachbear;
 
-public class Bullet {
+public class Bullet{
 	private static int dmg, knockback;
 	private int x, y, direction;
 	private boolean shooting;

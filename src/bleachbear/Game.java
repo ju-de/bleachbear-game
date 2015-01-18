@@ -16,13 +16,13 @@ public class Game extends Applet implements Runnable, KeyListener{
 	Loot i;
 	Background bg;
 	ArrayList<Bullet> pew = new ArrayList<Bullet>();
-	int ammo=0, tick=0, direction=0;
+	int ammo = 0, tick = 0, direction = 0;
 	Image image, pSprite, eMelee, eRange, lootThing, projectile, bDrop;
-	int pWidth=64, pHeight=80, pRow=0, pCol=0,
-		mWidth=56, mHeight=64, mRow=0, mCol=0,
-		rWidth=56, rHeight=64, rRow=0, rCol=0,
-		iWidth=40, iHeight=40,
-		bWidth=5, bHeight=5;
+	int pWidth = 64, pHeight = 80, pRow = 0, pCol = 0,
+		mWidth = 56, mHeight = 64, mRow = 0, mCol = 0,
+		rWidth = 56, rHeight = 64, rRow = 0, rCol = 0,
+		iWidth = 40, iHeight = 40,
+		bWidth = 3,  bHeight = 3,  bCol = 0;
 	Rectangle pBound, mBound, rBound, iBound, bBound;
 	Graphics panel;
 	URL assets;
@@ -76,12 +76,7 @@ public class Game extends Applet implements Runnable, KeyListener{
 			m.move();
 			r.move();
 			i.bobbing();
-			
-			//projectile
-			for(int i=0; i<10; i++)
-				if(pew.get(i).shot())
-					pew.get(i).shoot();
-			
+				
 			//item handling
 			if(iCollision()){
 				switch(i.getItem()){
@@ -102,10 +97,25 @@ public class Game extends Applet implements Runnable, KeyListener{
 				lootThing = getImage(assets, i.getPath()+".png");
 			}
 			
-			//animation handling
+			//projectile
+			for(int i=0; i<ammo; i++){
+				if(bCollision()){
+					pew.get(ammo).destroy();
+					break;
+				}
+				else if(pew.get(i).shot()){	//move shot across screen
+					bCol++;
+					
+					if(bCol == 2)
+						bCol = 0;
+					pew.get(i).shoot();
+				}
+			}
+			
+			//player animation
 			tick++;
 			if(tick%5 == 0){	//every 5 ticks
-				switch(pRow){	//player
+				switch(pRow){
 				//idle
 				case 0:
 				case 4:
@@ -131,6 +141,7 @@ public class Game extends Applet implements Runnable, KeyListener{
 				}
 			}
 			
+			//enemy animation
 			if(tick%10 == 0){
 				mCol++;
 				if(mCol == 4)
@@ -162,10 +173,11 @@ public class Game extends Applet implements Runnable, KeyListener{
 	}
 
 	public void paint(Graphics g){
-		g.drawImage(bDrop, bg.getX(), 0, 1600+bg.getX(), 270, this);
+		//g.drawImage(bDrop, bg.getX(), bg.getY(), 1600+bg.getX(), 270, this);
 		if(ammo<10)
 			for(int i=0; i<10; i++)
-				g.drawImage(projectile, pew.get(i).getX(), pew.get(i).getY(), bWidth, bHeight, this);
+				g.drawImage(projectile, pew.get(i).getX(), pew.get(i).getY(), pew.get(i).getX()+bWidth, pew.get(i).getY()+bHeight,
+				bWidth*bCol, 0, bWidth+bWidth*bCol, bHeight, this);
 		g.drawImage(pSprite, p.getX(), p.getY(), p.getX()+pWidth, p.getY()+pHeight,
 				pWidth*pCol, pHeight*pRow, pWidth+pWidth*pCol, pHeight+pHeight*pRow, this);
 				//image, size, part of image, listener
@@ -185,6 +197,7 @@ public class Game extends Applet implements Runnable, KeyListener{
 					pRow = 6;
 				p.jump();
 				pCol = 0;
+				bg.scroll(0, p.getJumpHeight()/2);
 				break;
 				
 			case KeyEvent.VK_LEFT:
@@ -192,7 +205,7 @@ public class Game extends Applet implements Runnable, KeyListener{
 				pRow = 5;
 				direction = 1;
 				if(!(p.inBox())){
-					bg.scroll(p.getSpeed());
+					bg.scroll(p.getSpeed(), 0);
 					m.scroll(p.getSpeed());
 					r.scroll(p.getSpeed());
 					i.scroll(p.getSpeed());
@@ -204,7 +217,7 @@ public class Game extends Applet implements Runnable, KeyListener{
 				pRow = 1;
 				direction = 0;
 				if(!(p.inBox())){
-					bg.scroll(-1*p.getSpeed());
+					bg.scroll(-1*p.getSpeed(), 0);
 					m.scroll(-1*p.getSpeed());
 					r.scroll(-1*p.getSpeed());
 					i.scroll(-1*p.getSpeed());
@@ -240,16 +253,19 @@ public class Game extends Applet implements Runnable, KeyListener{
 					pRow = 4;
 				pCol = 0;
 				break;
+				
 			case KeyEvent.VK_LEFT:
 				p.setDx(0);
 				pRow = 4;
 				pCol = 0;
 				break;
+				
 			case KeyEvent.VK_RIGHT:
 				p.setDx(0);
 				pRow = 0;
 				pCol = 0;
 				break;
+				
 			case KeyEvent.VK_SPACE:
 				p.setDx(0);
 				if(direction == 0){
@@ -276,13 +292,15 @@ public class Game extends Applet implements Runnable, KeyListener{
 		return false;
 	}
 	
-	/*public boolean bCollision(int i){	//touch bullet
-		bBound = new Rectangle(pew.get(i).getX(), pew.get(i).getY(), bWidth-2, bHeight-2);
-		eBound
-		
-		if(bBound.intersects(eBound))
-			return true;
-		
+	public boolean bCollision(){	//touch bullet
+		if(ammo<10){
+			bBound = new Rectangle(pew.get(ammo).getX(), pew.get(ammo).getY(), bWidth, bHeight);
+			mBound = new Rectangle(m.getX(), m.getY(), mWidth, mHeight);
+			rBound = new Rectangle(r.getX(), r.getY(), rWidth, rHeight);
+			
+			if(bBound.intersects(mBound) || bBound.intersects(rBound))
+				return true;
+		}
 		return false;
-	}*/
+	}
 }

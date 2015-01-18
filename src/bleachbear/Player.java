@@ -83,6 +83,10 @@ public class Player{
 		return speed;
 	}
 	
+	public int getJumpHeight(){
+		return jumpHeight;
+	}
+	
 	public boolean inBox(){
 		return within;
 	}
