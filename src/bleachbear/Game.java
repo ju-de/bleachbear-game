@@ -2,6 +2,7 @@ package bleachbear;
 
 import java.applet.Applet;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -17,7 +18,7 @@ public class Game extends Applet implements Runnable, KeyListener{
 	Loot i;
 	Background bg;
 	ArrayList<Bullet> pew = new ArrayList<Bullet>();
-	int ammo = 0, tick = 0, direction = 0;
+	int ammo = 0, maxAmmo = 6, tick = 0, direction = 0;
 	Image image, pSprite, eMelee, eRange, lootThing, projectile, bDrop;
 	int pWidth = 64, pHeight = 80, pRow = 0, pCol = 0,
 		mWidth = 56, mHeight = 64, mRow = 0, mCol = 0,
@@ -27,6 +28,7 @@ public class Game extends Applet implements Runnable, KeyListener{
 	Rectangle pBound, mBound, rBound, iBound, bBound;
 	Graphics panel;
 	URL assets;
+	Font font;
 	
 	public void init(){	
 		setSize(600, 360);
@@ -41,7 +43,7 @@ public class Game extends Applet implements Runnable, KeyListener{
 		m = new Enemy();
 		r = new Enemy();
 		i = new Loot();
-		for(int i=0; i<10; i++)
+		for(int i=0; i<maxAmmo; i++)
 			pew.add(new Bullet());
 		
 		try {
@@ -175,13 +177,20 @@ public class Game extends Applet implements Runnable, KeyListener{
 
 	public void paint(Graphics g){
 		//g.drawImage(bDrop, bg.getX(), bg.getY(), 1600+bg.getX(), 270, this);
-		if(ammo<10)
-			for(int i=0; i<10; i++)
+		if(ammo<maxAmmo)
+			for(int i=0; i<maxAmmo; i++)
 				g.drawImage(projectile, pew.get(i).getX(), pew.get(i).getY(), pew.get(i).getX()+bWidth, pew.get(i).getY()+bHeight,
 				bWidth*bCol, 0, bWidth+bWidth*bCol, bHeight, this);
+		
+		if(ammo == 0)	//full ammo
+			font = new Font("Dotum", Font.BOLD , 20);
+		else
+			font = new Font("Dotum", Font.PLAIN , 16);
+		g.setFont(font);
 		g.setColor(Color.WHITE);
-		g.drawString(""+(10-ammo), 600-25, 25);
+		g.drawString(""+(maxAmmo-ammo), 600-40, 360-40);
 		g.setColor(Color.BLACK);
+		
 		g.drawImage(pSprite, p.getX(), p.getY(), p.getX()+pWidth, p.getY()+pHeight,
 				pWidth*pCol, pHeight*pRow, pWidth+pWidth*pCol, pHeight+pHeight*pRow, this);
 				//image, size, part of image, listener
@@ -238,12 +247,11 @@ public class Game extends Applet implements Runnable, KeyListener{
 					pCol = 0;
 				}
 				
-				if(ammo<10){
+				if(ammo<maxAmmo){
 					pew.get(ammo).trigger(p.getX()+2, p.getY(), direction);
 					ammo++;
-				}	
-				
-				System.out.println(ammo);
+				}		
+				//System.out.println(ammo);
 				break;
 		}	
 	}
@@ -297,7 +305,7 @@ public class Game extends Applet implements Runnable, KeyListener{
 	}
 	
 	public boolean bCollision(){	//touch bullet
-		if(ammo<10){
+		if(ammo<maxAmmo){
 			bBound = new Rectangle(pew.get(ammo).getX(), pew.get(ammo).getY(), bWidth, bHeight);
 			mBound = new Rectangle(m.getX(), m.getY(), mWidth, mHeight);
 			rBound = new Rectangle(r.getX(), r.getY(), rWidth, rHeight);
