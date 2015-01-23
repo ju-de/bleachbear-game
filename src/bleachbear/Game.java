@@ -1,6 +1,7 @@
 package bleachbear;
 
 import java.applet.Applet;
+import java.awt.Color;
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -178,6 +179,9 @@ public class Game extends Applet implements Runnable, KeyListener{
 			for(int i=0; i<10; i++)
 				g.drawImage(projectile, pew.get(i).getX(), pew.get(i).getY(), pew.get(i).getX()+bWidth, pew.get(i).getY()+bHeight,
 				bWidth*bCol, 0, bWidth+bWidth*bCol, bHeight, this);
+		g.setColor(Color.WHITE);
+		g.drawString(""+(10-ammo), 600-25, 25);
+		g.setColor(Color.BLACK);
 		g.drawImage(pSprite, p.getX(), p.getY(), p.getX()+pWidth, p.getY()+pHeight,
 				pWidth*pCol, pHeight*pRow, pWidth+pWidth*pCol, pHeight+pHeight*pRow, this);
 				//image, size, part of image, listener
